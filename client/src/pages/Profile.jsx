@@ -29,7 +29,6 @@ export default function Profile() {
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
-
   // firebase storage
   // allow read;
   // allow write: if
@@ -103,7 +102,6 @@ export default function Profile() {
       dispatch(deleteUserFailure(error.message));
     }
   };
-
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
@@ -118,7 +116,6 @@ export default function Profile() {
       dispatch(deleteUserFailure(data.message));
     }
   };
-
   const handleShowListings = async () => {
     try {
       setShowListingsError(false);
@@ -128,10 +125,28 @@ export default function Profile() {
         setShowListingsError(true);
         return;
       }
-
       setUserListings(data);
     } catch (error) {
       setShowListingsError(true);
+    }
+  };
+
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
+    } catch (error) {
+      console.log(error.message);
     }
   };
   return (
@@ -208,7 +223,6 @@ export default function Profile() {
           Sign out
         </span>
       </div>
-
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is updated successfully!" : ""}
@@ -243,7 +257,11 @@ export default function Profile() {
               </Link>
 
               <div className="flex flex-col item-center">
-                <button className="text-red-700 uppercase">Delete</button>
+                <button
+                  onClick={() => handleListingDelete(listing._id)}
+                  className="text-red-700 uppercase">
+                  Delete
+                </button>
                 <button className="text-green-700 uppercase">Edit</button>
               </div>
             </div>
