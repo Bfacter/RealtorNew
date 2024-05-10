@@ -25,9 +25,10 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
-        setError(data.message);
         setLoading(false);
+        setError(data.message);
         return;
       }
       setLoading(false);
@@ -38,10 +39,9 @@ export default function SignUp() {
       setError(error.message);
     }
   };
-
   return (
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign up</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -64,10 +64,11 @@ export default function SignUp() {
           id="password"
           onChange={handleChange}
         />
+
         <button
           disabled={loading}
-          className=" bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          {loading ? "Signing up..." : "Sign up"}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          {loading ? "Loading..." : "Sign Up"}
         </button>
         <OAuth />
       </form>
@@ -76,8 +77,8 @@ export default function SignUp() {
         <Link to={"/sign-in"}>
           <span className="text-blue-700">Sign in</span>
         </Link>
-        {error && <p className="text-red-500">{error}</p>}
       </div>
+      {error && <p className="text-red-500 mt-5">{error}</p>}
     </div>
   );
 }
